@@ -41,10 +41,10 @@ func main() {
 
 	_, informer := NewIndexerInformer(podListWatcher, &v1.Pod{}, 0, cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
-			klog.V(2).Infof("add object: %v", obj)
+			klog.Infof("add object: %v", obj)
 		},
 		UpdateFunc: func(oldObj, newObj interface{}) {
-			klog.V(2).Infof("add new object: %v", newObj)
+			klog.Infof("add new object: %v", newObj)
 		},
 		DeleteFunc: func(obj interface{}) {},
 	},
