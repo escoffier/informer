@@ -10,6 +10,7 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
+	"k8s.io/klog/v2"
 )
 
 func main() {
@@ -34,8 +35,12 @@ func main() {
 	podListWatcher := cache.NewListWatchFromClient(clientset.CoreV1().RESTClient(), "pods", v1.NamespaceDefault, fields.Everything())
 
 	_, informer := NewIndexerInformer(podListWatcher, &v1.Pod{}, 0, cache.ResourceEventHandlerFuncs{
-		AddFunc:    func(obj interface{}) {},
-		UpdateFunc: func(oldObj, newObj interface{}) {},
+		AddFunc: func(obj interface{}) {
+			klog.V(2).Infof("add object: %v", obj)
+		},
+		UpdateFunc: func(oldObj, newObj interface{}) {
+			klog.V(2).Infof("add new object: %v", newObj)
+		},
 		DeleteFunc: func(obj interface{}) {},
 	},
 		cache.Indexers{})
