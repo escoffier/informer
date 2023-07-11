@@ -14,6 +14,11 @@ import (
 )
 
 func main() {
+	klog.InitFlags(nil)
+	flag.Set("logtostderr", "false")
+	flag.Set("alsologtostderr", "false")
+	flag.Parse()
+
 	var kubeconfig *string
 	if home := homedir.HomeDir(); home != "" {
 		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
