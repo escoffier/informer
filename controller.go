@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
+	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/tools/cache"
 )
@@ -45,24 +47,32 @@ func newInformer(
 		Process: func(obj interface{}) error {
 			// from oldest to newest
 			for _, d := range obj.(cache.Deltas) {
+				metaObj, err := meta.Accessor(obj)
+				if err != nil {
+					return cache.KeyError{Obj: obj, Err: err}
+				}
+				metaData := meta.AsPartialObjectMetadata(metaObj)
+
 				switch d.Type {
 				case cache.Sync, cache.Replaced, cache.Added, cache.Updated:
-					if old, exists, err := clientState.Get(d.Object); err == nil && exists {
-						if err := clientState.Update(d.Object); err != nil {
+
+					fmt.Printf("add obj: %v\n", metaData)
+					if old, exists, err := clientState.Get(metaData); err == nil && exists {
+						if err := clientState.Update(metaData); err != nil {
 							return err
 						}
-						h.OnUpdate(old, d.Object)
+						h.OnUpdate(old, metaData)
 					} else {
-						if err := clientState.Add(d.Object); err != nil {
+						if err := clientState.Add(metaData); err != nil {
 							return err
 						}
-						h.OnAdd(d.Object)
+						h.OnAdd(metaData)
 					}
 				case cache.Deleted:
-					if err := clientState.Delete(d.Object); err != nil {
+					if err := clientState.Delete(metaData); err != nil {
 						return err
 					}
-					h.OnDelete(d.Object)
+					h.OnDelete(metaData)
 				}
 			}
 			return nil
