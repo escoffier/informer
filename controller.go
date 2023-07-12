@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -55,8 +54,7 @@ func newInformer(
 
 				switch d.Type {
 				case cache.Sync, cache.Replaced, cache.Added, cache.Updated:
-
-					fmt.Printf("add obj: %v\n", metaData)
+					// fmt.Printf("add obj: %v\n", metaData)ß
 					if old, exists, err := clientState.Get(metaData); err == nil && exists {
 						if err := clientState.Update(metaData); err != nil {
 							return err
