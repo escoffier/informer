@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/client-go/tools/cache"
 )
@@ -27,7 +29,7 @@ func (c *resourceCache) Add(obj interface{}) error {
 		return cache.KeyError{Obj: obj, Err: err}
 	}
 	metaData := meta.AsPartialObjectMetadata(metaObj)
-	// fmt.Printf("add obj: %v", obj)
+	fmt.Printf("add obj: %v\n", metaData)
 	c.cacheStorage.Add(key, metaData)
 	return nil
 }
