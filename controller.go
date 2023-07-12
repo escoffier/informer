@@ -46,7 +46,7 @@ func newInformer(
 		Process: func(obj interface{}) error {
 			// from oldest to newest
 			for _, d := range obj.(cache.Deltas) {
-				metaObj, err := meta.Accessor(d)
+				metaObj, err := meta.Accessor(d.Object)
 				if err != nil {
 					return cache.KeyError{Obj: d, Err: err}
 				}
