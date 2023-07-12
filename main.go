@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"path/filepath"
 
 	v1 "k8s.io/api/core/v1"
@@ -41,9 +42,11 @@ func main() {
 
 	_, informer := NewIndexerInformer(podListWatcher, &v1.Pod{}, 0, cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
+			fmt.Printf("add obj: %v", obj)
 			klog.Infof("add object: %v", obj)
 		},
 		UpdateFunc: func(oldObj, newObj interface{}) {
+			fmt.Printf("update newObj: %v", newObj)
 			klog.Infof("add new object: %v", newObj)
 		},
 		DeleteFunc: func(obj interface{}) {},
