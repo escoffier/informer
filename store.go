@@ -1,6 +1,7 @@
 package main
 
 import (
+	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/client-go/tools/cache"
 )
 
@@ -20,8 +21,14 @@ func (c *resourceCache) Add(obj interface{}) error {
 	if err != nil {
 		return cache.KeyError{Obj: obj, Err: err}
 	}
+
+	metaObj, err := meta.Accessor(obj)
+	if err != nil {
+		return cache.KeyError{Obj: obj, Err: err}
+	}
+	metaData := meta.AsPartialObjectMetadata(metaObj)
 	// fmt.Printf("add obj: %v", obj)
-	c.cacheStorage.Add(key, obj)
+	c.cacheStorage.Add(key, metaData)
 	return nil
 }
 
@@ -32,7 +39,12 @@ func (c *resourceCache) Update(obj interface{}) error {
 		return cache.KeyError{Obj: obj, Err: err}
 	}
 	// fmt.Printf("update obj: %v", obj)
-	c.cacheStorage.Update(key, obj)
+	metaObj, err := meta.Accessor(obj)
+	if err != nil {
+		return cache.KeyError{Obj: obj, Err: err}
+	}
+	metaData := meta.AsPartialObjectMetadata(metaObj)
+	c.cacheStorage.Update(key, metaData)
 	return nil
 }
 
