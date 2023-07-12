@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"k8s.io/client-go/tools/cache"
 )
 
@@ -22,7 +20,7 @@ func (c *resourceCache) Add(obj interface{}) error {
 	if err != nil {
 		return cache.KeyError{Obj: obj, Err: err}
 	}
-	fmt.Printf("add obj: %v", obj)
+	// fmt.Printf("add obj: %v", obj)
 	c.cacheStorage.Add(key, obj)
 	return nil
 }
@@ -33,7 +31,7 @@ func (c *resourceCache) Update(obj interface{}) error {
 	if err != nil {
 		return cache.KeyError{Obj: obj, Err: err}
 	}
-	fmt.Printf("update obj: %v", obj)
+	// fmt.Printf("update obj: %v", obj)
 	c.cacheStorage.Update(key, obj)
 	return nil
 }
